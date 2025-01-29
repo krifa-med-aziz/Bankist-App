@@ -1,6 +1,4 @@
 'use strict';
-
-/////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // BANKIST APP
 
@@ -61,6 +59,40 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const displayMouvements = function (mouvements) {
+  containerMovements.innerHTML = ' ';
+  mouvements.forEach(function (mov, i) {
+    const type = mov < 0 ? 'withdrawal' : 'deposit';
+    const html = `
+    <div class="movements__row">
+      <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+      <div class="movements__date">3 days ago</div>
+      <div class="movements__value">${mov}DT</div>
+    </div>
+    `;
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+displayMouvements(account1.movements);
+
+const creatUsernames = accounts => {
+  accounts.forEach(account => {
+    account.username = account.owner
+      .toLocaleLowerCase()
+      .split(' ')
+      .map(name => name.at(0))
+      .join('');
+  });
+};
+creatUsernames(accounts);
+
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce((acc, curr) => acc + curr);
+  labelBalance.textContent = `${balance}DT`;
+};
+calcDisplayBalance(account1.movements);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -68,9 +100,15 @@ const inputClosePin = document.querySelector('.form__input--pin');
 const currencies = new Map([
   ['USD', 'United States dollar'],
   ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
+  ['TND', 'Dinard Tunisien'],
 ]);
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const user = 'Steven Thomas Williams'; //stw
+
+const withdrawals = movements.filter(mov => mov < 0);
+const deposits = movements.filter(mov => mov > 0);
+console.log(withdrawals);
+console.log(deposits);
 
 /////////////////////////////////////////////////
