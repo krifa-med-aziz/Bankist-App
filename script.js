@@ -75,7 +75,6 @@ const displayMouvements = function (mouvements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMouvements(account1.movements);
 
 const creatUsernames = accounts => {
   accounts.forEach(account => {
@@ -92,7 +91,45 @@ const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, curr) => acc + curr);
   labelBalance.textContent = `${balance}DT`;
 };
-calcDisplayBalance(account1.movements);
+
+const calculDisplaySummary = function (account) {
+  const summaryValueIn = account.movements
+    .filter(mov => mov > 0)
+    .reduce((acc, curr) => acc + curr, 0);
+  labelSumIn.textContent = `${summaryValueIn}DT`;
+  const summaryValueOut = account.movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(summaryValueOut)}DT`;
+  const interest = account.movements
+    .filter(mov => mov > 0)
+    .map(mov => mov * account.interestRate)
+    .filter(int => int >= 1)
+    .reduce((acc, int) => acc + int, 0)
+    .toFixed(2);
+  labelSumInterest.textContent = `${interest}DT`;
+};
+
+let currentAccount;
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    inputLoginPin.value = inputLoginUsername.value = '';
+    inputLoginPin.blur();
+    containerApp.style = 'opacity : 1 ;';
+    labelWelcome.textContent = `Welcome Back, ${currentAccount.owner
+      .split(' ')
+      .at(0)}`;
+    calcDisplayBalance(currentAccount.movements);
+    calculDisplaySummary(currentAccount);
+    displayMouvements(currentAccount.movements);
+  } else {
+    alert('User Not Found');
+  }
+});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -108,7 +145,5 @@ const user = 'Steven Thomas Williams'; //stw
 
 const withdrawals = movements.filter(mov => mov < 0);
 const deposits = movements.filter(mov => mov > 0);
-console.log(withdrawals);
-console.log(deposits);
 
 /////////////////////////////////////////////////
