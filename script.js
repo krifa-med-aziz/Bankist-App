@@ -103,7 +103,7 @@ const calculDisplaySummary = function (account) {
   labelSumOut.textContent = `${Math.abs(summaryValueOut)}DT`;
   const interest = account.movements
     .filter(mov => mov > 0)
-    .map(mov => mov * account.interestRate)
+    .map(mov => (mov * account.interestRate) / 100)
     .filter(int => int >= 1)
     .reduce((acc, int) => acc + int, 0)
     .toFixed(2);
@@ -134,6 +134,18 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
+btnLoan.addEventListener('click', e => {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov > amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  } else {
+    alert('loan denied');
+  }
+  inputLoanAmount.value = '';
+});
+
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Number(inputTransferAmount.value);
@@ -159,7 +171,6 @@ btnTransfer.addEventListener('click', function (e) {
 
 btnClose.addEventListener('click', e => {
   e.preventDefault();
-  console.log('delete');
   if (
     currentAccount.username === inputCloseUsername.value &&
     currentAccount.pin === Number(inputClosePin.value)
