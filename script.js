@@ -59,9 +59,10 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMouvements = function (mouvements) {
+const displayMouvements = function (mouvements, sort = false) {
+  const movs = sort ? mouvements.toSorted((a, b) => a - b) : mouvements;
   containerMovements.innerHTML = ' ';
-  mouvements.forEach(function (mov, i) {
+  movs.forEach(function (mov, i) {
     const type = mov < 0 ? 'withdrawal' : 'deposit';
     const html = `
     <div class="movements__row">
@@ -152,14 +153,12 @@ btnTransfer.addEventListener('click', function (e) {
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value
   );
-  console.log(amount, receiverAcc);
   if (
     amount > 0 &&
     amount <= currentAccount.balance &&
     receiverAcc &&
     receiverAcc.username !== currentAccount.username
   ) {
-    console.log('transaction valid');
     receiverAcc.movements.push(amount);
     currentAccount.movements.push(-amount);
     updateUI(currentAccount);
@@ -184,6 +183,12 @@ btnClose.addEventListener('click', e => {
   }
 });
 
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMouvements(currentAccount.movements, sorted);
+  sorted = !sorted;
+});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -193,11 +198,5 @@ const currencies = new Map([
   ['EUR', 'Euro'],
   ['TND', 'Dinard Tunisien'],
 ]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-const user = 'Steven Thomas Williams'; //stw
-
-const withdrawals = movements.filter(mov => mov < 0);
-const deposits = movements.filter(mov => mov > 0);
 
 /////////////////////////////////////////////////
