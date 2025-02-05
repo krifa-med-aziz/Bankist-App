@@ -142,57 +142,23 @@ const minute = `${now.getMinutes()}`.padStart(2, 0);
 labelDate.textContent = `${month}/${day}/${year} ${heure}:${minute} `;
 
 const displayMouvements = function (acc, sort = false) {
-  const movs = sort ? acc.movements.toSorted((a, b) => a - b) : acc.movements;
-const local = navigator.language;
-const options = {
-  hour: 'numeric',
-  minute: 'numeric',
-  day: 'numeric',
-  month: 'numeric',
-  year: 'numeric',
-  // weekday: 'long',
-};
-
-const formatMovementDate = function (date) {
-  const calcdaysPassed = (date1, date2) =>
-    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
-  const dayPassed = calcdaysPassed(new Date(), date);
-  if (dayPassed === 0) return 'Today';
-  else if (dayPassed === 1) return 'Yesterday';
-  else if (dayPassed <= 7) return `${dayPassed} Days Ago`;
-  else return new Intl.DateTimeFormat(local).format(date);
-};
-
-const displayMouvements = function (acc, sort = false) {
-  containerMovements.innerHTML = ' ';
+  const movs = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
+  containerMovements.innerHTML = '';
   movs.forEach(function (mov, i) {
-    const date = new Date(acc.movementsDates.at(i));
-    console.log(date);
-    const day = `${date.getDay()}`.padStart(2, 0);
-    const month = `${date.getMonth()}`.padStart(2, 0);
-    const year = date.getFullYear();
-    const displayDate = `${month}/${day}/${year}`;
-    const type = mov < 0 ? 'withdrawal' : 'deposit';
-  const combinedMovsDates = acc.movements.map((mov, i) => ({
-    movement: mov,
-    movDate: new Date(acc.movementsDates.at(i)),
-  }));
-  if (sort) combinedMovsDates.sort((a, b) => a.movement - b.movement);
-  combinedMovsDates.forEach(function (obj, i) {
-    const { movement, movDate } = obj;
-    const date = formatMovementDate(movDate);
-    const type = movement < 0 ? 'withdrawal' : 'deposit';
+    const date = new Date(acc.movementsDates[i]);
+    const displayDate = formatMovementDate(date);
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+
     const html = `
-    <div class="movements__row">
-      <div class="movements__type movements__type--${type}">${
+      <div class="movements__row">
+        <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-      <div class="movements__date">${displayDate}</div>
-      <div class="movements__value">${mov.toFixed(2)}DT</div>
-    <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-    <div class="movements__date">${date}</div>
-    <div class="movements__value">${movement.toFixed(2)}DT</div>
-    </div>
+        <div class="movements__date">${displayDate}</div>
+        <div class="movements__value">${mov.toFixed(2)}€</div>
+      </div>
     `;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
@@ -219,14 +185,14 @@ const calculDisplaySummary = function (account) {
   const summaryValueIn = account.movements
     .filter(mov => mov > 0)
     .reduce((acc, curr) => acc + curr, 0)
-    .toFixed(2);
+    .toFixed(2)
     .reduce((acc, curr) => acc + curr, 0)
     .toFixed(2);
   labelSumIn.textContent = `${summaryValueIn}DT`;
   const summaryValueOut = account.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0)
-    .toFixed(2);
+    .toFixed(2)
     .reduce((acc, mov) => acc + mov, 0)
     .toFixed(2);
   labelSumOut.textContent = `${Math.abs(summaryValueOut)}DT`;
