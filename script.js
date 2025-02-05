@@ -9,14 +9,14 @@ const account1 = {
   interestRate: 1.2, // %
   pin: 1111,
   movementsDates: [
+    '2024-02-02T10:51:36.790Z',
+    '2024-07-28T23:36:17.929Z',
+    '2024-08-01T10:17:24.185Z',
+    '2024-09-28T09:15:04.904Z',
     '2024-11-18T21:31:17.178Z',
     '2024-12-23T07:42:02.383Z',
-    '2025-01-28T09:15:04.904Z',
-    '2025-04-01T10:17:24.185Z',
-    '2025-02-08T14:11:59.604Z',
-    '2025-03-26T17:01:17.194Z',
-    '2025-03-28T23:36:17.929Z',
-    '2025-05-01T10:51:36.790Z',
+    '2025-02-02T17:01:17.194Z',
+    '2025-02-04T14:11:59.604Z',
   ],
 };
 
@@ -26,14 +26,14 @@ const account2 = {
   interestRate: 1.5,
   pin: 2222,
   movementsDates: [
-    '2024-12-18T21:31:17.178Z',
-    '2024-11-18T07:42:02.383Z',
-    '2025-02-15T09:15:04.904Z',
-    '2025-03-02T10:17:24.185Z',
-    '2025-01-09T14:11:59.604Z',
-    '2025-02-24T17:01:17.194Z',
-    '2025-05-20T23:36:17.929Z',
-    '2025-04-01T10:51:36.790Z',
+    '2024-02-02T10:51:36.790Z',
+    '2024-07-28T23:36:17.929Z',
+    '2024-08-01T10:17:24.185Z',
+    '2024-09-28T09:15:04.904Z',
+    '2024-11-18T21:31:17.178Z',
+    '2024-12-23T07:42:02.383Z',
+    '2025-02-02T17:01:17.194Z',
+    '2025-02-04T14:11:59.604Z',
   ],
 };
 
@@ -43,14 +43,14 @@ const account3 = {
   interestRate: 0.7,
   pin: 3333,
   movementsDates: [
+    '2024-02-02T10:51:36.790Z',
+    '2024-07-28T23:36:17.929Z',
+    '2024-08-01T10:17:24.185Z',
+    '2024-09-28T09:15:04.904Z',
     '2024-11-18T21:31:17.178Z',
     '2024-12-23T07:42:02.383Z',
-    '2025-01-28T09:15:04.904Z',
-    '2025-04-01T10:17:24.185Z',
-    '2025-02-08T14:11:59.604Z',
-    '2025-03-26T17:01:17.194Z',
-    '2025-03-28T23:36:17.929Z',
-    '2025-05-01T10:51:36.790Z',
+    '2025-02-02T17:01:17.194Z',
+    '2025-02-04T14:11:59.604Z',
   ],
 };
 
@@ -60,11 +60,11 @@ const account4 = {
   interestRate: 1,
   pin: 4444,
   movementsDates: [
+    '2024-02-15T09:15:04.904Z',
     '2024-12-18T21:31:17.178Z',
-    '2025-02-15T09:15:04.904Z',
-    '2025-03-02T10:17:24.185Z',
-    '2025-02-24T17:01:17.194Z',
-    '2025-04-01T10:51:36.790Z',
+    '2025-01-24T17:01:17.194Z',
+    '2025-02-02T17:01:17.194Z',
+    '2025-02-04T14:11:59.604Z',
   ],
 };
 
@@ -96,32 +96,42 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const now = new Date();
-const day = `${now.getDay()}`.padStart(2, 0);
-const month = `${now.getMonth()}`.padStart(2, 0);
-const year = now.getFullYear();
-const heure = now.getHours();
-const minute = `${now.getMinutes()}`.padStart(2, 0);
-labelDate.textContent = `${month}/${day}/${year} ${heure}:${minute} `;
+const local = navigator.language;
+const options = {
+  hour: 'numeric',
+  minute: 'numeric',
+  day: 'numeric',
+  month: 'numeric',
+  year: 'numeric',
+  // weekday: 'long',
+};
+
+const formatMovementDate = function (date) {
+  const calcdaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+  const dayPassed = calcdaysPassed(new Date(), date);
+  if (dayPassed === 0) return 'Today';
+  else if (dayPassed === 1) return 'Yesterday';
+  else if (dayPassed <= 7) return `${dayPassed} Days Ago`;
+  else return new Intl.DateTimeFormat(local).format(date);
+};
 
 const displayMouvements = function (acc, sort = false) {
-  const movs = sort ? acc.movements.toSorted((a, b) => a - b) : acc.movements;
   containerMovements.innerHTML = ' ';
-  movs.forEach(function (mov, i) {
-    const date = new Date(acc.movementsDates.at(i));
-    console.log(date);
-    const day = `${date.getDay()}`.padStart(2, 0);
-    const month = `${date.getMonth()}`.padStart(2, 0);
-    const year = date.getFullYear();
-    const displayDate = `${month}/${day}/${year}`;
-    const type = mov < 0 ? 'withdrawal' : 'deposit';
+  const combinedMovsDates = acc.movements.map((mov, i) => ({
+    movement: mov,
+    movDate: new Date(acc.movementsDates.at(i)),
+  }));
+  if (sort) combinedMovsDates.sort((a, b) => a.movement - b.movement);
+  combinedMovsDates.forEach(function (obj, i) {
+    const { movement, movDate } = obj;
+    const date = formatMovementDate(movDate);
+    const type = movement < 0 ? 'withdrawal' : 'deposit';
     const html = `
     <div class="movements__row">
-      <div class="movements__type movements__type--${type}">${
-      i + 1
-    } ${type}</div>
-      <div class="movements__date">${displayDate}</div>
-      <div class="movements__value">${mov.toFixed(2)}DT</div>
+    <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+    <div class="movements__date">${date}</div>
+    <div class="movements__value">${movement.toFixed(2)}DT</div>
     </div>
     `;
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -172,6 +182,10 @@ const updateUI = acc => {
 let currentAccount;
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
+  // Create current date and time
+  labelDate.textContent = new Intl.DateTimeFormat(local, options).format(
+    new Date()
+  );
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
@@ -192,6 +206,7 @@ btnLoan.addEventListener('click', e => {
   e.preventDefault();
   const amount = Number(inputLoanAmount.value);
   if (amount > 0 && currentAccount.movements.some(mov => mov > amount * 0.1)) {
+    currentAccount.movementsDates.push(new Date().toISOString());
     currentAccount.movements.push(amount);
     updateUI(currentAccount);
   } else {
@@ -212,6 +227,8 @@ btnTransfer.addEventListener('click', function (e) {
     receiverAcc &&
     receiverAcc.username !== currentAccount.username
   ) {
+    currentAccount.movementsDates.push(new Date().toISOString());
+    receiverAcc.movementsDates.push(new Date().toISOString());
     receiverAcc.movements.push(amount);
     currentAccount.movements.push(-amount);
     updateUI(currentAccount);
@@ -236,20 +253,9 @@ btnClose.addEventListener('click', e => {
   }
 });
 
-let sorted = false;
+let sorted = true;
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
   displayMouvements(currentAccount, sorted);
   sorted = !sorted;
 });
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['TND', 'Dinard Tunisien'],
-]);
-
-/////////////////////////////////////////////////
