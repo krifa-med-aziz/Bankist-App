@@ -116,6 +116,38 @@ const formatMovementDate = function (date) {
   else return new Intl.DateTimeFormat(local).format(date);
 };
 
+let currentAccount, timer;
+
+const resetTimer = () => {
+  if (timer) clearInterval(timer);
+  timer = startLogOutTimer();
+};
+
+const formatCur = function (value, local, currency) {
+  return new Intl.NumberFormat(local, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
+const startLogOutTimer = function () {
+  const tick = () => {
+    let min = String(Math.trunc(time / 60)).padStart(2, 0);
+    let sec = String(Math.trunc(time % 60)).padStart(2, 0);
+    labelTimer.textContent = `${min}:${sec}`;
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = 'Log in to get started';
+      containerApp.style = 'opacity : 0 ;';
+    }
+    time--;
+  };
+  let time = 300;
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
+
 const displayMouvements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
   const combinedMovsDates = acc.movements.map((mov, i) => ({
@@ -134,7 +166,7 @@ const displayMouvements = function (acc, sort = false) {
       i + 1
     } ${type}</div>
         <div class="movements__date">${date}</div>
-        <div class="movements__value">${movement.toFixed(2)}DT</div>
+        <div class="movements__value">${formatCur(movement, local, 'TND')}</div>
       </div>
     `;
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -154,8 +186,7 @@ creatUsernames(accounts);
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, curr) => acc + curr);
-  labelBalance.textContent = `${acc.balance.toFixed(2)}DT`;
-  labelBalance.textContent = `${acc.balance.toFixed(2)}DT`;
+  labelBalance.textContent = `${formatCur(acc.balance, local, 'TND')}`;
 };
 
 const calculDisplaySummary = function (account) {
@@ -163,19 +194,23 @@ const calculDisplaySummary = function (account) {
     .filter(mov => mov > 0)
     .reduce((acc, curr) => acc + curr, 0)
     .toFixed(2);
-  labelSumIn.textContent = `${summaryValueIn}DT`;
+  labelSumIn.textContent = `${formatCur(summaryValueIn, local, 'TND')}`;
   const summaryValueOut = account.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0)
     .toFixed(2);
-  labelSumOut.textContent = `${Math.abs(summaryValueOut)}DT`;
+  labelSumOut.textContent = `${formatCur(
+    Math.abs(summaryValueOut),
+    local,
+    'TND'
+  )}`;
   const interest = account.movements
     .filter(mov => mov > 0)
     .map(mov => (mov * account.interestRate) / 100)
     .filter(int => int >= 1)
     .reduce((acc, int) => acc + int, 0)
     .toFixed(2);
-  labelSumInterest.textContent = `${interest}DT`;
+  labelSumInterest.textContent = `${formatCur(interest, local, 'TND')}`;
 };
 const updateUI = acc => {
   calcDisplayBalance(acc);
@@ -183,9 +218,9 @@ const updateUI = acc => {
   displayMouvements(acc);
 };
 
-let currentAccount;
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
+  resetTimer();
   // Create current date and time
   labelDate.textContent = new Intl.DateTimeFormat(local, options).format(
     new Date()
@@ -208,11 +243,14 @@ btnLogin.addEventListener('click', function (e) {
 
 btnLoan.addEventListener('click', e => {
   e.preventDefault();
+  resetTimer();
   const amount = Number(inputLoanAmount.value);
   if (amount > 0 && currentAccount.movements.some(mov => mov > amount * 0.1)) {
-    currentAccount.movementsDates.push(new Date().toISOString());
-    currentAccount.movements.push(amount);
-    updateUI(currentAccount);
+    setTimeout(() => {
+      currentAccount.movementsDates.push(new Date().toISOString());
+      currentAccount.movements.push(amount);
+      updateUI(currentAccount);
+    }, 3000);
   } else {
     alert('loan denied');
   }
@@ -221,6 +259,7 @@ btnLoan.addEventListener('click', e => {
 
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
+  resetTimer();
   const amount = Number(inputTransferAmount.value);
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value
@@ -231,11 +270,13 @@ btnTransfer.addEventListener('click', function (e) {
     receiverAcc &&
     receiverAcc.username !== currentAccount.username
   ) {
-    currentAccount.movementsDates.push(new Date().toISOString());
-    receiverAcc.movementsDates.push(new Date().toISOString());
-    receiverAcc.movements.push(amount);
-    currentAccount.movements.push(-amount);
-    updateUI(currentAccount);
+    setTimeout(() => {
+      currentAccount.movementsDates.push(new Date().toISOString());
+      receiverAcc.movementsDates.push(new Date().toISOString());
+      receiverAcc.movements.push(amount);
+      currentAccount.movements.push(-amount);
+      updateUI(currentAccount);
+    }, 3000);
     inputTransferAmount.value = inputTransferTo.value = '';
   } else {
     alert('transaction denied');
@@ -253,6 +294,7 @@ btnClose.addEventListener('click', e => {
     );
     inputCloseUsername.value = inputClosePin.value = '';
     accounts.splice(index, 1);
+    labelWelcome.textContent = 'Log in to get started';
     containerApp.style = 'opacity : 0 ;';
   }
 });
