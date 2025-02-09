@@ -29,11 +29,16 @@ document.addEventListener('keydown', e => {
 const scrollUp = document.querySelector('.ScrollUp');
 const btnLearnMore = document.querySelector('.btn--scroll-to');
 const nav = document.querySelector('.nav');
+const initialCoords = document
+  .querySelector('#section--1')
+  .getBoundingClientRect();
+const header = document.querySelector('.header');
 btnLearnMore.addEventListener('click', () =>
   document.querySelector('#section--1').scrollIntoView({ behavior: 'smooth' })
 );
-window.addEventListener('scroll', () => {
-  if (window.scrollY >= 700) {
+const stickyNav = entries => {
+  const [entry] = entries;
+  if (!entry.isIntersecting) {
     scrollUp.classList.remove('hide');
     scrollUp.classList.add('show');
     nav.classList.add('sticky');
@@ -42,7 +47,13 @@ window.addEventListener('scroll', () => {
     scrollUp.classList.remove('show');
     scrollUp.classList.add('hide');
   }
+};
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${nav.getBoundingClientRect().height}px`,
 });
+headerObserver.observe(header);
 scrollUp.addEventListener('click', e => {
   e.preventDefault();
   document.querySelector('.header').scrollIntoView({ behavior: 'smooth' });
@@ -78,3 +89,35 @@ tabsContainer.addEventListener('click', function (e) {
     .classList.add('operations__content--active');
 });
 ////////////////////////
+// Menu fade animation
+const handleHover = function (e) {
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const sibling = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('.nav__logo');
+    sibling.forEach(s => {
+      if (s !== link) s.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
+////////////////////////
+// Revealing section on scroll
+const allSection = document.querySelectorAll('.section');
+const sectionScroll = function (entries, observer) {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.remove('section--hidden');
+    observer.unobserve(entry.target);
+  });
+};
+const sectionObserver = new IntersectionObserver(sectionScroll, {
+  root: null,
+  threshold: 0.2,
+});
+allSection.forEach(section => {
+  section.classList.add('section--hidden');
+  sectionObserver.observe(section);
+});
