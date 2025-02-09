@@ -141,3 +141,34 @@ const imgObserver = new IntersectionObserver(lazyimg, {
 imgsTargets.forEach(img => {
   imgObserver.observe(img);
 });
+////////////////////////
+// Silder
+const slides = document.querySelectorAll('.slide');
+const slider = document.querySelector('.slider');
+const btnRight = document.querySelector('.slider__btn--right');
+const btnLeft = document.querySelector('.slider__btn--left');
+let currSlide = 0;
+const maxSlides = slides.length;
+const goToSlide = function (slide) {
+  slides.forEach((s, i) => {
+    s.style.transform = `translateX(${100 * (i - slide)}%)`;
+  });
+};
+goToSlide(0);
+const nextSlide = () => {
+  if (currSlide === maxSlides - 1) {
+    currSlide = 0;
+  } else {
+    currSlide++;
+  }
+  goToSlide(currSlide);
+};
+const prevSlide = () => {
+  if (currSlide === 0) currSlide = maxSlides - 1;
+  else {
+    currSlide--;
+  }
+  goToSlide(currSlide);
+};
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
