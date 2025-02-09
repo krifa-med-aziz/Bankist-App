@@ -268,7 +268,6 @@ h4 {
 .operations {
   max-width: 100rem;
   margin: 12rem auto 0 auto;
-
   background-color: #fff;
 }
 
@@ -311,7 +310,6 @@ h4 {
 
 .operations__content {
   display: none;
-
   /* JUST PRESENTATIONAL */
   font-size: 1.7rem;
   padding: 2.5rem 7rem 6.5rem 7rem;
@@ -602,7 +600,7 @@ h4 {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(3px);
   z-index: 200;
   transition: all 0.5s;
 }
@@ -654,6 +652,7 @@ h4 {
 .hidden {
   visibility: hidden;
   opacity: 0;
+  pointer-events: none;
 }
 
 /* COOKIE MESSAGE */
@@ -669,13 +668,30 @@ h4 {
 }
 
 .ScrollUp {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   z-index: 150;
-  font-size: 20px;
-  padding: 15px;
+  font-size: 15px;
+  height: 24px;
+  padding: 20px 15px;
   border-radius: 50%;
-  bottom: 20px;
-  right: 50px;
+  bottom: 30px;
+  right: 30px;
   color: #333;
   background-color: var(--color-primary);
+  transition: ease 0.3s, transform 0.3s ease, opacity ease 0.3s;
+}
+.ScrollUp:hover {
+  background-color: var(--color-primary-darker);
+}
+.ScrollUp.hide {
+  transform: translateY(80px);
+  opacity: 0;
+}
+.ScrollUp.show {
+  transform: translateY(0px);
+  opacity: 1;
 }

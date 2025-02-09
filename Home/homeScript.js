@@ -26,19 +26,21 @@ document.addEventListener('keydown', e => {
 });
 ////////////////////////
 // Scrolling btn
-const scrollUp = document.querySelector('.scrollToTop');
+const scrollUp = document.querySelector('.ScrollUp');
 const btnLearnMore = document.querySelector('.btn--scroll-to');
 const nav = document.querySelector('.nav');
 btnLearnMore.addEventListener('click', () =>
   document.querySelector('#section--1').scrollIntoView({ behavior: 'smooth' })
 );
-window.addEventListener('scroll', function () {
+window.addEventListener('scroll', () => {
   if (window.scrollY >= 700) {
-    scrollUp.classList.remove('hidden');
+    scrollUp.classList.remove('hide');
+    scrollUp.classList.add('show');
     nav.classList.add('sticky');
   } else {
-    scrollUp.classList.add('hidden');
     nav.classList.remove('sticky');
+    scrollUp.classList.remove('show');
+    scrollUp.classList.add('hide');
   }
 });
 scrollUp.addEventListener('click', e => {
@@ -56,5 +58,23 @@ links.forEach(el => {
       document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
     }
   });
+});
+////////////////////////
+// OPERATIONS
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content ');
+
+tabsContainer.addEventListener('click', function (e) {
+  // tabs
+  const clicked = e.target.closest('.operations__tab');
+  if (!clicked) return;
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  clicked.classList.add('operations__tab--active');
+  // Content
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+  document
+    .querySelector(`.operations__content--${clicked.getAttribute('data-tab')}`)
+    .classList.add('operations__content--active');
 });
 ////////////////////////
