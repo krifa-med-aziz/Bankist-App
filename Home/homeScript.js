@@ -1,27 +1,44 @@
 'use strict';
 // Modal window
-const modal = document.querySelector('.modal');
+const modalOne = document.querySelector('.modal-1');
 const overlay = document.querySelector('.overlay');
-const btnCloseModal = document.querySelector('.btn--close-modal');
+const btnCloseModal = document.querySelectorAll('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 
-const openModal = e => {
-  e.preventDefault();
+const openModal = function (modal) {
   modal.classList.remove('hidden');
   overlay.classList.remove('hidden');
 };
-const closeModal = () => {
+const closeModal = modal => {
   modal.classList.add('hidden');
   overlay.classList.add('hidden');
 };
 btnsOpenModal.forEach(btn => {
-  btn.addEventListener('click', openModal);
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    if (btn.classList.contains('btn--show-modal')) {
+      openModal(modalOne);
+    } else {
+      openModal(modalTwo);
+    }
+  });
 });
-btnCloseModal.addEventListener('click', closeModal);
-overlay.addEventListener('click', closeModal);
+btnCloseModal.forEach(b => {
+  b.addEventListener('click', () => {
+    closeModal(modalOne);
+    closeModal(modalTwo);
+  });
+});
+overlay.addEventListener('click', () => {
+  closeModal(modalOne);
+  closeModal(modalTwo);
+});
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-    closeModal();
+  if (e.key === 'Escape' && !modalOne.classList.contains('hidden')) {
+    closeModal(modalOne);
+  }
+  if (e.key === 'Escape' && !modalTwo.classList.contains('hidden')) {
+    closeModal(modalTwo);
   }
 });
 ////////////////////////
@@ -213,3 +230,10 @@ const slider = function () {
 };
 slider();
 ////////////////////////
+const btnLogin = document.querySelector('.compte__link');
+const modalTwo = document.querySelector('.modal-2');
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  modalOne.classList.add('hidden');
+  modalTwo.classList.remove('hidden');
+});

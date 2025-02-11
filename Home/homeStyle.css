@@ -575,7 +575,8 @@ h4 {
 }
 
 /* MODAL WINDOW */
-.modal {
+.modal-1,
+.modal-2 {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -586,6 +587,7 @@ h4 {
   box-shadow: 0 4rem 6rem rgba(0, 0, 0, 0.3);
   z-index: 1000;
   transition: all 0.5s;
+  border-radius: 5px;
 }
 
 .overlay {
@@ -694,4 +696,8 @@ h4 {
   position: absolute;
   bottom: 0px;
   background-color: white;
+}
+.compte__creation {
+  text-align: center;
+  margin-top: 20px;
 }

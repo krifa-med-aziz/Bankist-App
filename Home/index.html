@@ -344,7 +344,7 @@
       </p>
     </footer>
 
-    <div class="modal hidden">
+    <div class="modal-1 hidden">
       <button class="btn--close-modal">&times;</button>
       <h2 class="modal__header">
         Open your bank account <br />
@@ -355,9 +355,23 @@
         <input type="text" />
         <label>Last Name</label>
         <input type="text" />
-        <label>Email Address</label>
-        <input type="email" />
-        <button class="btn">Next step &rarr;</button>
+        <label>Pin</label>
+        <input type="password" maxlength="4" />
+        <button class="btn">Create Account &rarr;</button>
+      </form>
+      <p class="compte__creation">
+        Vous avez déjà un compte ?
+        <a href="#" class="compte__link">Se connecter</a>
+      </p>
+    </div>
+    <div class="modal-2 hidden">
+      <button class="btn--close-modal">&times;</button>
+      <form class="modal__form">
+        <label>UserName</label>
+        <input type="text" />
+        <label>Pin</label>
+        <input type="password" maxlength="4" />
+        <button class="btn">Login &rarr;</button>
       </form>
     </div>
     <div class="overlay hidden"></div>
