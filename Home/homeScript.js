@@ -1,4 +1,5 @@
 'use strict';
+// import { accounts } from '../Account/AccountScript.js';
 // Modal window
 const modalOne = document.querySelector('.modal-1');
 const overlay = document.querySelector('.overlay');
@@ -230,10 +231,8 @@ const slider = function () {
 };
 slider();
 ////////////////////////
-const btnLogin = document.querySelector('.compte__link');
-const modalTwo = document.querySelector('.modal-2');
-btnLogin.addEventListener('click', function (e) {
+const signInBtn = document.querySelector('.account__link');
+signInBtn.addEventListener('click', e => {
   e.preventDefault();
-  modalOne.classList.add('hidden');
-  modalTwo.classList.remove('hidden');
+  window.location.href = '../Account/index.html';
 });

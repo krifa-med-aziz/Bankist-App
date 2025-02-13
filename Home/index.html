@@ -18,7 +18,7 @@
     />
     <link rel="stylesheet" href="/Home/homeStyle.css" />
     <title>Bankist</title>
-    <script defer src="/Home/homeScript.js"></script>
+    <script defer type="module" src="/Home/homeScript.js"></script>
   </head>
   <body>
     <header class="header">
@@ -352,28 +352,19 @@
       </h2>
       <form class="modal__form">
         <label>First Name</label>
-        <input type="text" />
+        <input type="text" class="create_input--firstName" />
         <label>Last Name</label>
-        <input type="text" />
+        <input type="text" class="create_input--lastName" />
         <label>Pin</label>
-        <input type="password" maxlength="4" />
+        <input type="password" maxlength="4" class="create_input--pin" />
         <button class="btn">Create Account &rarr;</button>
       </form>
-      <p class="compte__creation">
-        Vous avez déjà un compte ?
-        <a href="#" class="compte__link">Se connecter</a>
+      <p class="account__creation">
+        Do you already have an account?
+        <a href="#" class="account__link">Sign in</a>
       </p>
     </div>
-    <div class="modal-2 hidden">
-      <button class="btn--close-modal">&times;</button>
-      <form class="modal__form">
-        <label>UserName</label>
-        <input type="text" />
-        <label>Pin</label>
-        <input type="password" maxlength="4" />
-        <button class="btn">Login &rarr;</button>
-      </form>
-    </div>
+
     <div class="overlay hidden"></div>
     <div class="scrollToTop">
       <button><i class="fa-solid fa-arrow-up ScrollUp hide"></i></button>

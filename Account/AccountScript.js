@@ -81,8 +81,12 @@ const labelTimer = document.querySelector('.timer');
 
 const containerApp = document.querySelector('.app');
 const containerMovements = document.querySelector('.movements');
+const nav = document.querySelector('.nav');
+const header = document.querySelector('.header');
 
 const btnLogin = document.querySelector('.login__btn');
+const btnLogOut = document.querySelector('.logOut__btn');
+const btnback = document.querySelector('.back__btn');
 const btnTransfer = document.querySelector('.form__btn--transfer');
 const btnLoan = document.querySelector('.form__btn--loan');
 const btnClose = document.querySelector('.form__btn--close');
@@ -139,6 +143,8 @@ const startLogOutTimer = function () {
       clearInterval(timer);
       labelWelcome.textContent = 'Log in to get started';
       containerApp.style = 'opacity : 0 ;';
+      nav.classList.remove('hidden');
+      header.classList.add('hidden');
     }
     time--;
   };
@@ -154,7 +160,6 @@ const displayMouvements = function (acc, sort = false) {
     movement: mov,
     movDate: new Date(acc.movementsDates.at(i)),
   }));
-
   if (sort) combinedMovsDates.sort((a, b) => a.movement - b.movement);
   combinedMovsDates.forEach(function (obj, i) {
     const { movement, movDate } = obj;
@@ -218,8 +223,14 @@ const updateUI = acc => {
   displayMouvements(acc);
 };
 
+btnback.addEventListener('click', e => {
+  e.preventDefault();
+  window.location.href = '../Home/index.html';
+});
+
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
+  nav.classList.add('hidden');
   resetTimer();
   // Create current date and time
   labelDate.textContent = new Intl.DateTimeFormat(local, options).format(
@@ -232,13 +243,24 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginPin.value = inputLoginUsername.value = '';
     inputLoginPin.blur();
     containerApp.style = 'opacity : 1 ;';
+    header.classList.remove('hidden');
     labelWelcome.textContent = `Welcome Back, ${currentAccount.owner
       .split(' ')
       .at(0)}`;
     updateUI(currentAccount);
   } else {
     alert('User Not Found');
+    nav.classList.remove('hidden');
+    inputLoginPin.value = inputLoginUsername.value = '';
+    inputLoginPin.blur();
   }
+});
+
+btnLogOut.addEventListener('click', e => {
+  e.preventDefault();
+  header.classList.add('hidden');
+  nav.classList.remove('hidden');
+  containerApp.style = 'opacity : 0 ;';
 });
 
 btnLoan.addEventListener('click', e => {
@@ -296,6 +318,8 @@ btnClose.addEventListener('click', e => {
     accounts.splice(index, 1);
     labelWelcome.textContent = 'Log in to get started';
     containerApp.style = 'opacity : 0 ;';
+    nav.classList.remove('hidden');
+    header.classList.add('hidden');
   }
 });
 

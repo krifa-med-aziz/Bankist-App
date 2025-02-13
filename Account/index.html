@@ -23,9 +23,9 @@
   </head>
   <body>
     <!-- TOP NAVIGATION -->
-    <nav>
-      <p class="welcome">Log in to get started</p>
+    <nav class="nav">
       <img src="/Assets/logo.png" alt="Logo" class="logo" />
+      <p>Log in to get started</p>
       <form class="login">
         <input
           type="text"
@@ -34,14 +34,20 @@
         />
         <!-- In practice, use type="password" -->
         <input
-          type="text"
+          type="password"
           placeholder="PIN"
           maxlength="4"
           class="login__input login__input--pin"
         />
-        <button class="login__btn">&rarr;</button>
+        <button class="login__btn">Login</button>
+        <button class="login__btn back__btn">Back</button>
       </form>
     </nav>
+    <section class="header hidden">
+      <p class="welcome">Log in to get started</p>
+      <img src="/Assets/logo.png" alt="Logo" class="logo" />
+      <button class="logOut__btn">Log Out</button>
+    </section>
 
     <main class="app">
       <!-- BALANCE -->

@@ -20,19 +20,41 @@ body {
   color: #444;
   background-color: #f3f3f3;
   height: 100vh;
-  padding: 2rem;
+  position: relative;
 }
 
 nav {
+  border: solid #5ec576 2px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+  padding: 5rem;
+  border-radius: 10px;
+  z-index: 1000;
+  box-shadow: 0px 0px 15px 1px #7c847dba;
+  transition: all 1s;
+}
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
+  padding: 2rem 3.5rem;
+  transition: all 1s;
 }
-
+nav > p,
 .welcome {
   font-size: 1.9rem;
   font-weight: 500;
+}
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: all 1s;
 }
 
 .logo {
@@ -41,15 +63,17 @@ nav {
 
 .login {
   display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-
+.logOut__btn,
 .login__input {
   border: none;
   padding: 0.5rem 2rem;
   font-size: 1.6rem;
   font-family: inherit;
   text-align: center;
-  width: 12rem;
+  width: 100%;
   border-radius: 10rem;
   margin-right: 1rem;
   color: inherit;
@@ -57,6 +81,14 @@ nav {
   transition: all 0.3s;
 }
 
+.logOut__btn {
+  padding: 0.5rem 2rem;
+  background-color: #ff585f;
+  width: 10%;
+  cursor: pointer;
+}
+
+.logOut__btn:focus,
 .login__input:focus {
   outline: none;
   border: 1px solid #ccc;
@@ -69,18 +101,27 @@ nav {
 .login__btn {
   border: none;
   background: none;
-  font-size: 2.2rem;
+  font-size: 1.5rem;
   color: inherit;
   cursor: pointer;
   transition: all 0.3s;
+  padding: 0.8rem 2.5rem;
+  border-radius: 3rem;
+  background-color: #5ec576;
+  color: #222;
+}
+.back__btn {
+  background-color: #ff585f;
 }
 
+.logOut__btn:hover,
+.logOut__btn:focus,
 .login__btn:hover,
 .login__btn:focus,
 .btn--sort:hover,
 .btn--sort:focus {
   outline: none;
-  color: #777;
+  opacity: 0.8;
 }
 
 /* MAIN */
