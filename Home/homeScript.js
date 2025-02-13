@@ -19,27 +19,20 @@ btnsOpenModal.forEach(btn => {
     e.preventDefault();
     if (btn.classList.contains('btn--show-modal')) {
       openModal(modalOne);
-    } else {
-      openModal(modalTwo);
     }
   });
 });
 btnCloseModal.forEach(b => {
   b.addEventListener('click', () => {
     closeModal(modalOne);
-    closeModal(modalTwo);
   });
 });
 overlay.addEventListener('click', () => {
   closeModal(modalOne);
-  closeModal(modalTwo);
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !modalOne.classList.contains('hidden')) {
     closeModal(modalOne);
-  }
-  if (e.key === 'Escape' && !modalTwo.classList.contains('hidden')) {
-    closeModal(modalTwo);
   }
 });
 ////////////////////////

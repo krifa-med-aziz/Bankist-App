@@ -327,6 +327,5 @@ let sorted = true;
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
   displayMouvements(currentAccount, sorted);
-  displayMouvements(currentAccount, sorted);
   sorted = !sorted;
 });
